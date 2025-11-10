@@ -1,30 +1,32 @@
-package main
+package tasks
 
 import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/azevedoMairon/task-tracker/internal/contracts"
 )
 
-type TaskDeleteHandler struct {
-	loader ILoader
-	saver  ISaver
+type Deleter struct {
+	loader contracts.Loader
+	saver  contracts.Saver
 }
 
-func NewTaskDeleteHandler(loader ILoader, saver ISaver) *TaskDeleteHandler {
-	return &TaskDeleteHandler{
+func NewDeleter(loader contracts.Loader, saver contracts.Saver) *Deleter {
+	return &Deleter{
 		loader: loader,
 		saver:  saver,
 	}
 }
 
-func (h TaskDeleteHandler) Handle() {
+func (d Deleter) Delete() {
 	if len(os.Args) < 3 {
 		log.Fatal("usage: task-cli delete <task id>")
 	}
 	taskID := os.Args[2]
 
-	tasks, err := h.loader.Load()
+	tasks, err := d.loader.Load()
 	if err != nil {
 		fmt.Println("error while loading tasks: ", err)
 		return
@@ -38,7 +40,7 @@ func (h TaskDeleteHandler) Handle() {
 
 	delete(tasks, taskID)
 
-	if err := h.saver.Save(tasks); err != nil {
+	if err := d.saver.Save(tasks); err != nil {
 		fmt.Println("error while saving tasks: ", err)
 		return
 	}

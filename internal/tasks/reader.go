@@ -1,35 +1,38 @@
-package main
+package tasks
 
 import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/azevedoMairon/task-tracker/internal/contracts"
+	"github.com/azevedoMairon/task-tracker/internal/models"
 )
 
-type TaskListHandler struct {
-	loader ILoader
+type Reader struct {
+	loader contracts.Loader
 }
 
-func NewTaskListHandler(loader ILoader) *TaskListHandler {
-	return &TaskListHandler{
+func NewReader(loader contracts.Loader) *Reader {
+	return &Reader{
 		loader: loader,
 	}
 }
 
-func (h TaskListHandler) Handle() {
+func (r Reader) Read() {
 	if len(os.Args) < 2 {
-		log.Fatal("usage: task-cli list <status>")
+		log.Fatal("usage: task-cli list <status (optional)>")
 	}
 
 	if len(os.Args) < 3 {
-		h.handleListAll()
+		r.readAll()
 	}
 
-	h.handleListByStatus()
+	r.readByStatus()
 }
 
-func (h TaskListHandler) handleListAll() {
-	tasks, err := h.loader.Load()
+func (r Reader) readAll() {
+	tasks, err := r.loader.Load()
 	if err != nil {
 		fmt.Println("error while loading tasks:", err)
 		return
@@ -45,7 +48,7 @@ func (h TaskListHandler) handleListAll() {
 	}
 }
 
-func (h TaskListHandler) handleListByStatus() {
+func (r Reader) readByStatus() {
 	statusStr := os.Args[2]
 	status, err := parseStatus(statusStr)
 	if err != nil {
@@ -53,7 +56,7 @@ func (h TaskListHandler) handleListByStatus() {
 		return
 	}
 
-	tasks, err := h.loader.Load()
+	tasks, err := r.loader.Load()
 	if err != nil {
 		fmt.Println("error while loading tasks:", err)
 		return
@@ -72,15 +75,15 @@ func (h TaskListHandler) handleListByStatus() {
 	}
 }
 
-func parseStatus(statusStr string) (Status, error) {
-	switch statusStr {
+func parseStatus(s string) (models.Status, error) {
+	switch s {
 	case "todo":
-		return StatusTodo, nil
+		return models.StatusTodo, nil
 	case "in-progress":
-		return StatusInProgress, nil
+		return models.StatusInProgress, nil
 	case "done":
-		return StatusDone, nil
+		return models.StatusDone, nil
 	default:
-		return -1, fmt.Errorf("invalid status: %s (use: todo, in-progress, done)", statusStr)
+		return -1, fmt.Errorf("invalid status: %s (use: todo, in-progress, done)", s)
 	}
 }

@@ -1,24 +1,27 @@
-package main
+package tasks
 
 import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/azevedoMairon/task-tracker/internal/contracts"
+	"github.com/azevedoMairon/task-tracker/internal/models"
 )
 
-type TaskUpdateHandler struct {
-	loader ILoader
-	saver  ISaver
+type Updater struct {
+	loader contracts.Loader
+	saver  contracts.Saver
 }
 
-func NewTaskUpdateHandler(loader ILoader, saver ISaver) *TaskUpdateHandler {
-	return &TaskUpdateHandler{
+func NewUpdater(loader contracts.Loader, saver contracts.Saver) *Updater {
+	return &Updater{
 		loader: loader,
 		saver:  saver,
 	}
 }
 
-func (h TaskUpdateHandler) HandleUpdateDesc() {
+func (u Updater) Update() {
 	if len(os.Args) < 4 {
 		log.Fatal("usage: task-cli update <task id> <new task description>")
 	}
@@ -26,7 +29,7 @@ func (h TaskUpdateHandler) HandleUpdateDesc() {
 	taskID := os.Args[2]
 	newDesc := os.Args[3]
 
-	tasks, err := h.loader.Load()
+	tasks, err := u.loader.Load()
 	if err != nil {
 		fmt.Println("error while loading tasks: ", err)
 		return
@@ -41,7 +44,7 @@ func (h TaskUpdateHandler) HandleUpdateDesc() {
 	task.SetDescription(newDesc)
 	tasks[taskID] = task
 
-	if err := h.saver.Save(tasks); err != nil {
+	if err := u.saver.Save(tasks); err != nil {
 		fmt.Println("error while saving tasks: ", err)
 		return
 	}
@@ -49,13 +52,13 @@ func (h TaskUpdateHandler) HandleUpdateDesc() {
 	fmt.Printf("task %s updated succesfully", taskID)
 }
 
-func (h TaskUpdateHandler) HandleMarkInProgress() {
+func (u Updater) MarkInProgress() {
 	if len(os.Args) < 3 {
 		log.Fatal("usage: task-cli mark-in-progress <task id>")
 	}
 	taskID := os.Args[2]
 
-	tasks, err := h.loader.Load()
+	tasks, err := u.loader.Load()
 	if err != nil {
 		fmt.Println("error while loading tasks: ", err)
 		return
@@ -67,10 +70,10 @@ func (h TaskUpdateHandler) HandleMarkInProgress() {
 		return
 	}
 
-	task.SetStatus(StatusInProgress)
+	task.SetStatus(models.StatusInProgress)
 	tasks[taskID] = task
 
-	if err := h.saver.Save(tasks); err != nil {
+	if err := u.saver.Save(tasks); err != nil {
 		fmt.Println("error while saving tasks: ", err)
 		return
 	}
@@ -78,13 +81,13 @@ func (h TaskUpdateHandler) HandleMarkInProgress() {
 	fmt.Printf("task %s is now in progress ;)", taskID)
 }
 
-func (h TaskUpdateHandler) HandleMarkDone() {
+func (u Updater) MarkDone() {
 	if len(os.Args) < 3 {
 		log.Fatal("usage: task-cli mark-done <task id>")
 	}
 	taskID := os.Args[2]
 
-	tasks, err := h.loader.Load()
+	tasks, err := u.loader.Load()
 	if err != nil {
 		fmt.Println("error while loading tasks: ", err)
 		return
@@ -96,10 +99,10 @@ func (h TaskUpdateHandler) HandleMarkDone() {
 		return
 	}
 
-	task.SetStatus(StatusDone)
+	task.SetStatus(models.StatusDone)
 	tasks[taskID] = task
 
-	if err := h.saver.Save(tasks); err != nil {
+	if err := u.saver.Save(tasks); err != nil {
 		fmt.Println("error while saving tasks: ", err)
 		return
 	}
