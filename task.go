@@ -2,14 +2,6 @@ package main
 
 import "time"
 
-type Status int
-
-const (
-	StatusTodo Status = iota
-	StatusInProgress
-	StatusDone
-)
-
 type TaskMap map[string]Task
 
 type Task struct {

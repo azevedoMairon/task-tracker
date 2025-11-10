@@ -22,6 +22,7 @@ func main() {
 	updateHandler := NewTaskUpdateHandler(taskLoader, taskSaver)
 	addHandler := NewTaskAddHandler(taskLoader, taskSaver)
 	deleteHandler := NewTaskDeleteHandler(taskLoader, taskSaver)
+	listHandler := NewTaskListHandler(taskLoader)
 
 	switch command {
 	case "add":
@@ -35,6 +36,7 @@ func main() {
 	case "mark-done":
 		updateHandler.HandleMarkDone()
 	case "list":
+		listHandler.Handle()
 
 	default:
 		fmt.Println("Unknown command:", command)
