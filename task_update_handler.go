@@ -14,10 +14,10 @@ func NewTaskUpdateHandler() *TaskUpdateHandler {
 }
 
 func (h TaskUpdateHandler) Handle() {
-	if len(os.Args) < 3 {
+	if len(os.Args) < 4 {
 		log.Fatal("usage: task-cli update <task id> <new task description>")
-		return
 	}
+
 	taskID := os.Args[2]
 	newDesc := os.Args[3]
 
@@ -30,6 +30,7 @@ func (h TaskUpdateHandler) Handle() {
 	task, exists := tasks[taskID]
 	if !exists {
 		fmt.Println("requested task does not exist")
+		return
 	}
 
 	task.SetDescription(newDesc)

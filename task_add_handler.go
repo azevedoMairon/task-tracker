@@ -18,7 +18,6 @@ func NewTaskAddHandler() *TaskAddHandler {
 func (h TaskAddHandler) Handle() {
 	if len(os.Args) < 3 {
 		log.Fatal("usage: task-cli add <task description>")
-		return
 	}
 	description := os.Args[2]
 

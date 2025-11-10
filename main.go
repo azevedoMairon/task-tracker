@@ -24,7 +24,8 @@ func main() {
 		updateHandler := NewTaskUpdateHandler()
 		updateHandler.Handle()
 	case "delete":
-
+		deleteHandler := NewTaskDeleteHandler()
+		deleteHandler.Handle()
 	case "mark-in-progress":
 
 	case "mark-done":
