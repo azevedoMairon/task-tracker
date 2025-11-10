@@ -33,7 +33,7 @@ func main() {
 	case "mark-in-progress":
 		updateHandler.HandleMarkInProgress()
 	case "mark-done":
-
+		updateHandler.HandleMarkDone()
 	case "list":
 
 	default:

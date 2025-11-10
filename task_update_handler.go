@@ -77,3 +77,32 @@ func (h TaskUpdateHandler) HandleMarkInProgress() {
 
 	fmt.Printf("task %s is now in progress ;)", taskID)
 }
+
+func (h TaskUpdateHandler) HandleMarkDone() {
+	if len(os.Args) < 3 {
+		log.Fatal("usage: task-cli mark-done <task id>")
+	}
+	taskID := os.Args[2]
+
+	tasks, err := h.loader.Load()
+	if err != nil {
+		fmt.Println("error while loading tasks: ", err)
+		return
+	}
+
+	task, exists := tasks[taskID]
+	if !exists {
+		fmt.Println("requested task does not exist")
+		return
+	}
+
+	task.SetStatus(StatusDone)
+	tasks[taskID] = task
+
+	if err := h.saver.Save(tasks); err != nil {
+		fmt.Println("error while saving tasks: ", err)
+		return
+	}
+
+	fmt.Printf("task %s is now done ;)", taskID)
+}
