@@ -18,24 +18,27 @@ func (h TaskUpdateHandler) Handle() {
 		log.Fatal("usage: task-cli update <task id> <new task description>")
 		return
 	}
-	description := os.Args[2]
+	taskID := os.Args[2]
+	newDesc := os.Args[3]
 
 	tasks, err := loadTasks()
 	if err != nil {
-		fmt.Println("Error while loading tasks: ", err)
+		fmt.Println("error while loading tasks: ", err)
 		return
 	}
 
-	nextID := getNextID(tasks)
+	task, exists := tasks[taskID]
+	if !exists {
+		fmt.Println("requested task does not exist")
+	}
 
-	newTask := NewTask(nextID, description)
-
-	tasks = append(tasks, newTask)
+	task.SetDescription(newDesc)
+	tasks[taskID] = task
 
 	if err := saveTasks(tasks); err != nil {
-		fmt.Println("Error while saving tasks: ", err)
+		fmt.Println("error while saving tasks: ", err)
 		return
 	}
 
-	fmt.Printf("Task added succesfully (ID: %d)", nextID)
+	fmt.Printf("task %s updated succesfully", taskID)
 }

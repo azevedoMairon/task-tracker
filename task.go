@@ -10,8 +10,9 @@ const (
 	StatusDone
 )
 
+type TaskMap map[string]Task
+
 type Task struct {
-	ID          int       `json:"id"`
 	Description string    `json:"description"`
 	Status      Status    `json:"status"`
 	CreatedAt   time.Time `json:"createdAt"`
@@ -20,10 +21,13 @@ type Task struct {
 
 func NewTask(id int, desc string) Task {
 	return Task{
-		ID:          id,
 		Description: desc,
 		Status:      StatusTodo,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
+}
+
+func (t *Task) SetDescription(desc string) {
+	t.Description = desc
 }

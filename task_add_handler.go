@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
 
 type TaskAddHandler struct {
@@ -23,58 +24,58 @@ func (h TaskAddHandler) Handle() {
 
 	tasks, err := loadTasks()
 	if err != nil {
-		fmt.Println("Error while loading tasks: ", err)
+		fmt.Println("error while loading tasks: ", err)
 		return
 	}
 
 	nextID := getNextID(tasks)
 	newTask := NewTask(nextID, description)
-	tasks = append(tasks, newTask)
+
+	tasks[strconv.Itoa(nextID)] = newTask
 
 	if err := saveTasks(tasks); err != nil {
-		fmt.Println("Error while saving tasks: ", err)
+		fmt.Println("error while saving tasks: ", err)
 		return
 	}
 
 	fmt.Printf("Task added succesfully (ID: %d)", nextID)
 }
 
-func loadTasks() ([]Task, error) {
+func loadTasks() (TaskMap, error) {
 	file, err := os.Open(tasksFile)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return []Task{}, nil
+			return TaskMap{}, nil
 		}
 		return nil, err
 	}
 	defer file.Close()
 
-	var taskWrapper TaskWrapper
+	var tasks TaskMap
 	decoder := json.NewDecoder(file)
-	if err := decoder.Decode(&taskWrapper); err != nil {
+	if err := decoder.Decode(&tasks); err != nil {
 		return nil, err
 	}
-	return taskWrapper.Tasks, nil
+	return tasks, nil
 }
 
-func saveTasks(tasks []Task) error {
+func saveTasks(tasks TaskMap) error {
 	file, err := os.Create(tasksFile)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	taskWrapper := NewTaskWrapper(tasks)
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
-	return encoder.Encode(taskWrapper)
+	return encoder.Encode(tasks)
 }
 
-func getNextID(tasks []Task) int {
+func getNextID(tasks TaskMap) int {
 	maxID := 0
-	for _, task := range tasks {
-		if task.ID > maxID {
-			maxID = task.ID
+	for idStr := range tasks {
+		if id, err := strconv.Atoi(idStr); err == nil && id > maxID {
+			maxID = id
 		}
 	}
 	return maxID + 1

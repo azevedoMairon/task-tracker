@@ -1,39 +1,14 @@
 {
-  "Tasks": [
-    {
-      "id": 1,
-      "description": "test",
-      "status": 0,
-      "createdAt": "2025-11-09T21:47:38.285949-03:00",
-      "updatedAt": "2025-11-09T21:47:38.285949-03:00"
-    },
-    {
-      "id": 2,
-      "description": "test",
-      "status": 0,
-      "createdAt": "2025-11-09T21:47:40.193011-03:00",
-      "updatedAt": "2025-11-09T21:47:40.193011-03:00"
-    },
-    {
-      "id": 3,
-      "description": "test",
-      "status": 0,
-      "createdAt": "2025-11-09T21:47:40.950372-03:00",
-      "updatedAt": "2025-11-09T21:47:40.950372-03:00"
-    },
-    {
-      "id": 4,
-      "description": "test",
-      "status": 0,
-      "createdAt": "2025-11-09T21:47:41.445086-03:00",
-      "updatedAt": "2025-11-09T21:47:41.445086-03:00"
-    },
-    {
-      "id": 5,
-      "description": "test",
-      "status": 0,
-      "createdAt": "2025-11-09T21:47:42.008273-03:00",
-      "updatedAt": "2025-11-09T21:47:42.008273-03:00"
-    }
-  ]
+  "1": {
+    "description": "lavar a louca",
+    "status": 0,
+    "createdAt": "2025-11-09T21:47:38.285949-03:00",
+    "updatedAt": "2025-11-09T21:47:38.285949-03:00"
+  },
+  "2": {
+    "description": "test",
+    "status": 0,
+    "createdAt": "2025-11-09T21:47:40.193011-03:00",
+    "updatedAt": "2025-11-09T21:47:40.193011-03:00"
+  }
 }
