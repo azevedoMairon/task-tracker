@@ -7,10 +7,15 @@ import (
 )
 
 type TaskUpdateHandler struct {
+	loader ILoader
+	saver  ISaver
 }
 
-func NewTaskUpdateHandler() *TaskUpdateHandler {
-	return &TaskUpdateHandler{}
+func NewTaskUpdateHandler(loader ILoader, saver ISaver) *TaskUpdateHandler {
+	return &TaskUpdateHandler{
+		loader: loader,
+		saver:  saver,
+	}
 }
 
 func (h TaskUpdateHandler) Handle() {
@@ -21,7 +26,7 @@ func (h TaskUpdateHandler) Handle() {
 	taskID := os.Args[2]
 	newDesc := os.Args[3]
 
-	tasks, err := loadTasks()
+	tasks, err := h.loader.Load()
 	if err != nil {
 		fmt.Println("error while loading tasks: ", err)
 		return
@@ -36,7 +41,7 @@ func (h TaskUpdateHandler) Handle() {
 	task.SetDescription(newDesc)
 	tasks[taskID] = task
 
-	if err := saveTasks(tasks); err != nil {
+	if err := h.saver.Save(tasks); err != nil {
 		fmt.Println("error while saving tasks: ", err)
 		return
 	}

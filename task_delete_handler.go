@@ -7,10 +7,15 @@ import (
 )
 
 type TaskDeleteHandler struct {
+	loader ILoader
+	saver  ISaver
 }
 
-func NewTaskDeleteHandler() *TaskDeleteHandler {
-	return &TaskDeleteHandler{}
+func NewTaskDeleteHandler(loader ILoader, saver ISaver) *TaskDeleteHandler {
+	return &TaskDeleteHandler{
+		loader: loader,
+		saver:  saver,
+	}
 }
 
 func (h TaskDeleteHandler) Handle() {
@@ -19,7 +24,7 @@ func (h TaskDeleteHandler) Handle() {
 	}
 	taskID := os.Args[2]
 
-	tasks, err := loadTasks()
+	tasks, err := h.loader.Load()
 	if err != nil {
 		fmt.Println("error while loading tasks: ", err)
 		return
@@ -33,7 +38,7 @@ func (h TaskDeleteHandler) Handle() {
 
 	delete(tasks, taskID)
 
-	if err := saveTasks(tasks); err != nil {
+	if err := h.saver.Save(tasks); err != nil {
 		fmt.Println("error while saving tasks: ", err)
 		return
 	}

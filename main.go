@@ -15,16 +15,18 @@ func main() {
 	}
 
 	command := os.Args[1]
+	taskLoader := NewLoader()
+	taskSaver := NewSaver()
 
 	switch command {
 	case "add":
-		addHandler := NewTaskAddHandler()
+		addHandler := NewTaskAddHandler(taskLoader, taskSaver)
 		addHandler.Handle()
 	case "update":
-		updateHandler := NewTaskUpdateHandler()
+		updateHandler := NewTaskUpdateHandler(taskLoader, taskSaver)
 		updateHandler.Handle()
 	case "delete":
-		deleteHandler := NewTaskDeleteHandler()
+		deleteHandler := NewTaskDeleteHandler(taskLoader, taskSaver)
 		deleteHandler.Handle()
 	case "mark-in-progress":
 
