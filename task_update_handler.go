@@ -18,7 +18,7 @@ func NewTaskUpdateHandler(loader ILoader, saver ISaver) *TaskUpdateHandler {
 	}
 }
 
-func (h TaskUpdateHandler) Handle() {
+func (h TaskUpdateHandler) HandleUpdateDesc() {
 	if len(os.Args) < 4 {
 		log.Fatal("usage: task-cli update <task id> <new task description>")
 	}
@@ -47,4 +47,33 @@ func (h TaskUpdateHandler) Handle() {
 	}
 
 	fmt.Printf("task %s updated succesfully", taskID)
+}
+
+func (h TaskUpdateHandler) HandleMarkInProgress() {
+	if len(os.Args) < 3 {
+		log.Fatal("usage: task-cli mark-in-progress <task id>")
+	}
+	taskID := os.Args[2]
+
+	tasks, err := h.loader.Load()
+	if err != nil {
+		fmt.Println("error while loading tasks: ", err)
+		return
+	}
+
+	task, exists := tasks[taskID]
+	if !exists {
+		fmt.Println("requested task does not exist")
+		return
+	}
+
+	task.SetStatus(StatusInProgress)
+	tasks[taskID] = task
+
+	if err := h.saver.Save(tasks); err != nil {
+		fmt.Println("error while saving tasks: ", err)
+		return
+	}
+
+	fmt.Printf("task %s is now in progress ;)", taskID)
 }

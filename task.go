@@ -31,3 +31,7 @@ func NewTask(id int, desc string) Task {
 func (t *Task) SetDescription(desc string) {
 	t.Description = desc
 }
+
+func (t *Task) SetStatus(status Status) {
+	t.Status = status
+}
